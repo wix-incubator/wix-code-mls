@@ -1,0 +1,33 @@
+### Node template
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+
+*.seed
+
+#intelliJ
+.idea
+*.iml
+target
+
+# Dependency directories
+node_modules
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+dist/
+.eslintcache
+.vscode/
+
+# docs utility temp folders
+tmp*
+
