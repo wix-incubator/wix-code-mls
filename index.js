@@ -2,6 +2,8 @@ const rets = require('rets-client');
 const fs = require('fs');
 const util = require('util');
 const clientSettings = require("./josh-credentials").clientSettings;
+const readAllTables = require('./read-all-tables');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 const photoSourceId = '12345'; // <--- dummy example ID!  this will usually be a MLS number / listing id
 
@@ -41,7 +43,7 @@ function log(obj) {
   console.log(util.inspect(obj, {colors: true, depth: 5}));
 }
 
-async function getResources() {
+async function getResources(client) {
   let data = await client.metadata.getResources();
 
   console.log("======================================");
@@ -58,7 +60,7 @@ async function getResources() {
   }
 }
 
-async function getClass(resource) {
+async function getClass(client, resource) {
   let data = await client.metadata.getClass(resource);
   console.log("===========================================================");
   console.log(`========  Class Metadata (from ${resource} Resource)  ========`);
@@ -73,7 +75,7 @@ async function getClass(resource) {
   }
 }
 
-async function getObject(resource) {
+async function getObject(client, resource) {
   let data = await client.metadata.getObject(resource);
   console.log("===========================================================");
   console.log(`========  Object Metadata (from ${resource} Resource)  ========`);
@@ -93,12 +95,13 @@ async function getObject(resource) {
 
 }
 
-async function getTableFieldCount(resource, className, classId) {
+async function getTableFieldCount(client, resource, className, classId) {
   let data = await client.metadata.getTable(resource, classId);
   console.log(`${resource} ${className} - ${classId}: ${data.results[0].metadata.length} fields`);
 }
 
-async function getTableFields(resource, className, classId) {
+async function getTableFields(client, resource, className, classId) {
+  console.log('getTable', resource, classId);
   let data = await client.metadata.getTable(resource, classId);
   console.log(`${resource} ${className} - ${classId}: ${data.results[0].metadata.length} fields`);
   console.log("==============================================");
@@ -112,19 +115,34 @@ async function getTableFields(resource, className, classId) {
   data.results[0].metadata.forEach(field => {
     console.log(`${field.MetadataEntryID}, ${field.SystemName}, ${field.ShortName}, ${field.LongName}, ${field.DataType}`);
   });
+  let fields = data.results[0].metadata.map(field => {
+    return {
+      id: field.SystemName,
+      title: field.LongName
+    }
+  });
+  return fields;
 }
 
-async function readTable(resource, className, query) {
+async function readTable(client, resource, className, query, fields) {
   let itemsData = await client.search.query(resource, className, query, {limit:10000, offset:0});
-  itemsData.results.forEach(item => {
-    console.log(`${item.L_ListingID}, ${item.L_State}, ${item.L_City}, ${item.L_AddressStreet}, ${item.L_AddressNumber}, ${item.L_AskingPrice}, ${item.L_PictureCount}`)
-//      if (item.L_PictureCount === 20)
-//        log(item);
+
+  const csvWriter = createCsvWriter({
+    path: `tmp/${resource}-${className}.csv`,
+    header: fields
   });
+
+  await csvWriter.writeRecords(itemsData.results);
+
+  // itemsData.results.forEach(item => {
+  //   console.log(`${item.L_ListingID}, ${item.L_State}, ${item.L_City}, ${item.L_AddressStreet}, ${item.L_AddressNumber}, ${item.L_AskingPrice}, ${item.L_PictureCount}`)
+  //    if (item.L_PictureCount === 20)
+  //      log(item);
+  // });
   console.log(itemsData.results.length);
 }
 
-async function getPhotosForResource(resourceId) {    // get photos
+async function getPhotosForResource(client, resourceId) {    // get photos
   let photoResults = await client.objects.getAllObjects("Property", "Photo", resourceId, {alwaysGroupObjects: true, ObjectData: '*'})
   console.log("=================================");
   console.log("========  Photo Results  ========");
@@ -158,42 +176,44 @@ rets.getAutoLogoutClient(clientSettings, async function (client) {
 
   //get resources metadata
 
+  await readAllTables(client);
+
   // get resources
-  await getResources();
+  // await getResources(client);
 
   // get class metadata
-  await getClass("Property");
-  // await getClass("ActiveAgent");
-  // await getClass("OpenHouse");
+  // await getClass(client, "Property");
+  // await getClass(client, "ActiveAgent");
+  // await getClass(client, "OpenHouse");
 
-  // await getObject("Property");
-  // await getObject("ActiveAgent");
-  // await getObject("OpenHouse");
+  // await getObject(client, "Property");
+  // await getObject(client, "ActiveAgent");
+  // await getObject(client, "OpenHouse");
 
-  // await getTableFieldCount("Property", "Residential Detached", "RD_1");
-  // await getTableFieldCount("Property", "Residential Attached", "RA_2");
-  // await getTableFieldCount("Property", "Multifamily", "MF_3");
-  // await getTableFieldCount("Property", "Land", "LD_4");
-  // await getTableFieldCount("ActiveAgent", "Active Agent", "ActiveAgent");
-  // await getTableFieldCount("OpenHouse", "Residential Detached", "RD_1");
-  // await getTableFieldCount("OpenHouse", "Residential Attached", "RA_2");
-  // await getTableFieldCount("OpenHouse", "Multifamily", "MF_3");
-  // await getTableFieldCount("OpenHouse", "Land", "LD_4");
+  // await getTableFieldCount(client, "Property", "Residential Detached", "RD_1");
+  // await getTableFieldCount(client, "Property", "Residential Attached", "RA_2");
+  // await getTableFieldCount(client, "Property", "Multifamily", "MF_3");
+  // await getTableFieldCount(client, "Property", "Land", "LD_4");
+  // await getTableFieldCount(client, "ActiveAgent", "Active Agent", "ActiveAgent");
+  // await getTableFieldCount(client, "OpenHouse", "Residential Detached", "RD_1");
+  // await getTableFieldCount(client, "OpenHouse", "Residential Attached", "RA_2");
+  // await getTableFieldCount(client, "OpenHouse", "Multifamily", "MF_3");
+  // await getTableFieldCount(client, "OpenHouse", "Land", "LD_4");
 
-  // await getTableFields("Property", "Residential Detached", "RD_1");
-  // await getTableFields("Property", "Residential Attached", "RA_2");
-  // await getTableFields("Property", "Multifamily", "MF_3");
-  // await getTableFields("Property", "Land", "LD_4");
-  // await getTableFields("ActiveAgent", "Active Agent", "ActiveAgent");
-  // await getTableFields("OpenHouse", "Residential Detached", "RD_1");
-  // await getTableFields("OpenHouse", "Residential Attached", "RA_2");
-  // await getTableFields("OpenHouse", "Multifamily", "MF_3");
-  // await getTableFields("OpenHouse", "Land", "LD_4");
+  // let fields = await getTableFields(client, "Property", "Residential Detached", "RD_1");
+  // await getTableFields(client, "Property", "Residential Attached", "RA_2");
+  // await getTableFields(client, "Property", "Multifamily", "MF_3");
+  // await getTableFields(client, "Property", "Land", "LD_4");
+  // await getTableFields(client, "ActiveAgent", "Active Agent", "ActiveAgent");
+  // await getTableFields(client, "OpenHouse", "Residential Detached", "RD_1");
+  // await getTableFields(client, "OpenHouse", "Residential Attached", "RA_2");
+  // await getTableFields(client, "OpenHouse", "Multifamily", "MF_3");
+  // await getTableFields(client, "OpenHouse", "Land", "LD_4");
 
-  // await readTable("Property", "RD_1", "(L_UpdateDate=2010-01-01+)");
-  // await readTable("Property", "RA_2", "(L_UpdateDate=2010-01-01+)");
+  // await readTable(client, "Property", "RD_1", "(L_UpdateDate=2010-01-01+)", fields);
+  // await readTable(client, "Property", "RA_2", "(L_UpdateDate=2010-01-01+)");
 
-  // await getPhotosForResource('262188347')
+  // await getPhotosForResource(client, '262188347')
 
 }).catch(function (errorInfo) {
   var error = errorInfo? (errorInfo.error || errorInfo): 'unknown';
