@@ -2,10 +2,8 @@ const rets = require('rets-client');
 const fs = require('fs');
 const util = require('util');
 const clientSettings = require("./josh-credentials").clientSettings;
-const readAllTables = require('./read-all-tables');
+const readAllTables = require('./read-all-tables').readAll;
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-
-const photoSourceId = '12345'; // <--- dummy example ID!  this will usually be a MLS number / listing id
 
 function outputFields(obj, opts) {
   if (!obj) {
@@ -180,35 +178,35 @@ rets.getAutoLogoutClient(clientSettings, async function (client) {
 
   // get resources
   // await getResources(client);
-
-  // get class metadata
+  //
+  // // get class metadata
   // await getClass(client, "Property");
   // await getClass(client, "ActiveAgent");
   // await getClass(client, "OpenHouse");
-
+  //
   // await getObject(client, "Property");
   // await getObject(client, "ActiveAgent");
   // await getObject(client, "OpenHouse");
-
-  // await getTableFieldCount(client, "Property", "Residential Detached", "RD_1");
-  // await getTableFieldCount(client, "Property", "Residential Attached", "RA_2");
-  // await getTableFieldCount(client, "Property", "Multifamily", "MF_3");
-  // await getTableFieldCount(client, "Property", "Land", "LD_4");
-  // await getTableFieldCount(client, "ActiveAgent", "Active Agent", "ActiveAgent");
-  // await getTableFieldCount(client, "OpenHouse", "Residential Detached", "RD_1");
-  // await getTableFieldCount(client, "OpenHouse", "Residential Attached", "RA_2");
-  // await getTableFieldCount(client, "OpenHouse", "Multifamily", "MF_3");
-  // await getTableFieldCount(client, "OpenHouse", "Land", "LD_4");
-
+  //
+  // // await getTableFieldCount(client, "Property", "Residential Detached", "RD_1");
+  // // await getTableFieldCount(client, "Property", "Residential Attached", "RA_2");
+  // // await getTableFieldCount(client, "Property", "Multifamily", "MF_3");
+  // // await getTableFieldCount(client, "Property", "Land", "LD_4");
+  // // await getTableFieldCount(client, "ActiveAgent", "Active Agent", "ActiveAgent");
+  // // await getTableFieldCount(client, "OpenHouse", "Residential Detached", "RD_1");
+  // // await getTableFieldCount(client, "OpenHouse", "Residential Attached", "RA_2");
+  // // await getTableFieldCount(client, "OpenHouse", "Multifamily", "MF_3");
+  // // await getTableFieldCount(client, "OpenHouse", "Land", "LD_4");
+  // //
   // let fields = await getTableFields(client, "Property", "Residential Detached", "RD_1");
   // await getTableFields(client, "Property", "Residential Attached", "RA_2");
-  // await getTableFields(client, "Property", "Multifamily", "MF_3");
-  // await getTableFields(client, "Property", "Land", "LD_4");
-  // await getTableFields(client, "ActiveAgent", "Active Agent", "ActiveAgent");
-  // await getTableFields(client, "OpenHouse", "Residential Detached", "RD_1");
-  // await getTableFields(client, "OpenHouse", "Residential Attached", "RA_2");
-  // await getTableFields(client, "OpenHouse", "Multifamily", "MF_3");
-  // await getTableFields(client, "OpenHouse", "Land", "LD_4");
+  // // await getTableFields(client, "Property", "Multifamily", "MF_3");
+  // // await getTableFields(client, "Property", "Land", "LD_4");
+  // // await getTableFields(client, "ActiveAgent", "Active Agent", "ActiveAgent");
+  // // await getTableFields(client, "OpenHouse", "Residential Detached", "RD_1");
+  // // await getTableFields(client, "OpenHouse", "Residential Attached", "RA_2");
+  // // await getTableFields(client, "OpenHouse", "Multifamily", "MF_3");
+  // // await getTableFields(client, "OpenHouse", "Land", "LD_4");
 
   // await readTable(client, "Property", "RD_1", "(L_UpdateDate=2010-01-01+)", fields);
   // await readTable(client, "Property", "RA_2", "(L_UpdateDate=2010-01-01+)");

@@ -80,7 +80,7 @@ async function getPhotosForResource(client, aClass, resourceKey) {    // get pho
 }
 
 
-module.exports = async function(client) {
+module.exports.readAll = async function(client) {
   let resources = await getResources(client);
 
   // doing flat map here
@@ -90,5 +90,16 @@ module.exports = async function(client) {
   for (let i=0; i < classes.length; i++) {
     await readTable(client, classes[i]);
   }
+};
 
+module.exports.listTables = async function(client) {
+  let resources = await getResources(client);
+
+  // doing flat map here
+  let classes = Array.prototype.concat.apply([],
+    await Promise.all(resources.map(resource => getClasses(client, resource))));
+
+  for (let i=0; i < classes.length; i++) {
+    console.log('table', `"${classes[i].resourceID} ${classes[i].description}"`, classes[i]);
+  }
 };

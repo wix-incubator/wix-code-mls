@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@wix/media-manager-js-sdk": "^3.0.3",
+    "axios": "^0.18.0",
     "csv-writer": "^1.0.0",
     "rets-client": "5.2.0"
   }
