@@ -35,6 +35,7 @@ syncMLS({
     secret: 'xxxx-xxxx-xxxx',
     checkUpdateState: 'https://yoav68.wixsite.com/mls-rets/_functions-dev/checkUpdateState',
     batchCheckUpdateState: 'https://yoav68.wixsite.com/mls-rets/_functions-dev/batchCheckUpdateState',
+    batchCheckUpdateState2: 'https://yoav68.wixsite.com/mls-rets/_functions-dev/batchCheckUpdateState2',
     saveItem: 'https://yoav68.wixsite.com/mls-rets/_functions-dev/saveItem'
   },
   tablesConfig
