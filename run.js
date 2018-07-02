@@ -37,6 +37,7 @@ syncMLS({
     batchCheckUpdateState: 'https://yoav68.wixsite.com/mls-rets/_functions-dev/batchCheckUpdateState',
     batchCheckUpdateState2: 'https://yoav68.wixsite.com/mls-rets/_functions-dev/batchCheckUpdateState2',
     saveItem: 'https://yoav68.wixsite.com/mls-rets/_functions-dev/saveItem',
+    saveItemBatch: 'https://yoav68.wixsite.com/mls-rets/_functions-dev/saveItemBatch',
     clearStale: 'https://yoav68.wixsite.com/mls-rets/_functions-dev/clearStale'
   },
   tablesConfig
