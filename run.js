@@ -1,4 +1,4 @@
-const clientSettings = require("./mls-josh-credentials").clientSettings;
+const clientSettings = require("./josh/mls-josh-credentials").clientSettings;
 const credentials = require('./media-manager-credentials').credentials;
 
 const mlsMetadata = require('./lib/sync-mls').mlsMetadata;
