@@ -41,7 +41,10 @@ syncMLS({
     clearStale: 'https://yoav68.wixsite.com/mls-rets/_functions-dev/clearStale'
   },
   tablesConfig
-);
+)
+  .then(() => {
+    console.log('Completed Sync');
+  });
 
 
 // saveItem({data: 1, name: 'wefwe', date: new Date()},
