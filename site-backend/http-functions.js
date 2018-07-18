@@ -63,7 +63,7 @@ export async function post_clearStale(request) {
     console.log('before query', collection, date);
     let res = await wixData.query(collection)
       .lt('_updatedDate', date)
-      .find();
+      .find({suppressAuth: true});
     console.log('after query', res.length);
     while (res.length > 0) {
       console.log('found', res.length);
@@ -75,7 +75,7 @@ export async function post_clearStale(request) {
       console.log('before query', collection, date);
       res = await wixData.query(collection)
         .lt('_updatedDate', date)
-        .find();
+        .find({suppressAuth: true});
       console.log('after query', res.length);
     }
     return ok({body: ''+count});
