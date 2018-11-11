@@ -43,6 +43,29 @@ export async function post_saveItemBatch(request) {
   return ok({body: 'ok'});
 }
 
+export async function post_saveItemBatch2(request) {
+  console.log('saveItemBatch start');
+  const payload = await request.body.text();
+  const payloadJson = JSON.parse(payload, dateReviver);
+  const collection = payloadJson.collection;
+  const items = payloadJson.data;
+
+  const hmac = crypto.createHmac('sha256', secret);
+  hmac.update(JSON.stringify(items, dateReplacer) + collection);
+  if (hmac.digest('hex') !== payloadJson.signature) {
+    return forbidden({body: 'invalid signature'});
+  }
+
+  try {
+    await wixData.bulkUpdate(collection, items, {suppressAuth: true});
+  }
+  catch (e) {
+    return ok({body: e.stack});
+  }
+  console.log('saveItemBatch completed');
+  return ok({body: 'ok'});
+}
+
 export async function post_clearStale(request) {
   console.log('clearStale start');
   const payload = await request.body.text();
@@ -146,6 +169,65 @@ export async function post_batchCheckUpdateState2(request) {
     return ok({body: e.stack});
   }
 }
+
+export async function post_batchCheckUpdateState3(request) {
+  console.log('batchCheckUpdateState start');
+  try {
+    const payload = await request.body.text();
+    const payloadJson = JSON.parse(payload, dateReviver);
+    const collection = payloadJson.collection;
+    const items = payloadJson.data.items; //{id}[]
+
+    const hmac = crypto.createHmac('sha256', secret);
+    hmac.update(JSON.stringify(payloadJson.data, dateReplacer) + collection);
+    if (hmac.digest('hex') !== payloadJson.signature) {
+      return forbidden({body: 'invalid signature'});
+    }
+
+    let queries = items.forEach(item => wixData.query(collection).eq('_id', item.id));
+    let query = queries.reduce((accuQuery, query) => (!!accuQuery)?accuQuery.or(query): query);
+    let result = [];
+    let itemsToUpdate = [];
+    let cOk =0, cNeedUpdate = 0, cNotFound = 0;
+    try {
+      let res = await query.find({suppressAuth: true});
+
+      items.forEach(item => {
+        let foundItem = res.items.find(_ => _._id === item.id);
+        if (foundItem && foundItem._hash === item.hash) {
+          itemsToUpdate.push(foundItem);
+          cOk += 1;
+          result.push({status: 'ok', id: item.id});
+        }
+        else if (foundItem) {
+          cNeedUpdate += 1;
+          result.push({status: 'need-update', id: item.id});
+        }
+        else {
+          cNotFound += 1;
+          result.push({status: 'not-found', id: item.id});
+        }
+
+      });
+
+    }
+    catch(e) {
+      result.push({status: 'error', error: e.message});
+    }
+
+    console.log('batchCheckUpdateState items to update:', itemsToUpdate.length);
+    console.log(`batchCheckUpdateState results: ${result.length} - ${cOk}/${cNeedUpdate}/${cNotFound}`);
+    let updateResult = await wixData.bulkUpdate(collection, itemsToUpdate, {suppressAuth: true});
+    console.log('batchCheckUpdateState bulkUpdate result', updateResult);
+    console.log('batchCheckUpdateState complete');
+    return ok({body: JSON.stringify(result)});
+  }
+  catch (e) {
+    console.log('batchCheckUpdateState error', e.message, e.stack);
+    return ok({body: e.stack});
+  }
+}
+
 
 const dateRegex = /^Date\((\d+)\)$/;
 function dateReviver(key, value) {
