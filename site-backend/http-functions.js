@@ -57,7 +57,8 @@ export async function post_saveItemBatch2(request) {
   }
 
   try {
-    await wixData.bulkUpdate(collection, items, {suppressAuth: true});
+    let bulkResult = await wixData.bulkSave(collection, items, {suppressAuth: true});
+    console.log('saveItemBatch bulkUpdate', bulkResult);
   }
   catch (e) {
     return ok({body: e.stack});
@@ -184,13 +185,16 @@ export async function post_batchCheckUpdateState3(request) {
       return forbidden({body: 'invalid signature'});
     }
 
-    let queries = items.forEach(item => wixData.query(collection).eq('_id', item.id));
+    console.log('batchCheckUpdateState input items:', items.length);
+    let queries = items.map(item => wixData.query(collection).eq('_id', item.id));
+    console.log('batchCheckUpdateState input queries:', items.length);
     let query = queries.reduce((accuQuery, query) => (!!accuQuery)?accuQuery.or(query): query);
     let result = [];
     let itemsToUpdate = [];
     let cOk =0, cNeedUpdate = 0, cNotFound = 0;
     try {
       let res = await query.find({suppressAuth: true});
+      console.log('batchCheckUpdateState query results:', res.items.length);
 
       items.forEach(item => {
         let foundItem = res.items.find(_ => _._id === item.id);
@@ -219,7 +223,7 @@ export async function post_batchCheckUpdateState3(request) {
     console.log(`batchCheckUpdateState results: ${result.length} - ${cOk}/${cNeedUpdate}/${cNotFound}`);
     let updateResult = await wixData.bulkUpdate(collection, itemsToUpdate, {suppressAuth: true});
     console.log('batchCheckUpdateState bulkUpdate result', updateResult);
-    console.log('batchCheckUpdateState complete');
+    console.log('batchCheckUpdateState complete', result);
     return ok({body: JSON.stringify(result)});
   }
   catch (e) {
