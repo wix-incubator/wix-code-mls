@@ -109,6 +109,48 @@ export async function post_clearStale(request) {
   }
 }
 
+export async function post_clearStale2(request) {
+  console.log('clearStale start');
+  const payload = await request.body.text();
+  const payloadJson = JSON.parse(payload, dateReviver);
+  const collection = payloadJson.collection;
+
+  const hmac = crypto.createHmac('sha256', secret);
+  hmac.update(collection);
+  if (hmac.digest('hex') !== payloadJson.signature) {
+    return forbidden({body: 'invalid signature'});
+  }
+
+  try {
+    let date = new Date();
+    date.setDate(date.getDate() - 1);
+
+    console.log('clearStale - query clear stale for', collection);
+    let res = await wixData.query(collection)
+      .lt('_updatedDate', date)
+      .find({suppressAuth: true});
+    console.log(`clearStale - found ${res.totalCount} items to remove, current page ${res.length}`);
+    let itemsToDelete = res.items;
+    let removed = 0;
+    let errors = 0;
+    for (let i=0; i < itemsToDelete.length; i++) {
+      try {
+        await wixData.remove(collection, itemsToDelete[i]._id, {suppressAuth: true});
+        removed++
+      }
+      catch (e) {
+        console.log(`clearStale - delete item - error`, e.stack);
+        errors++
+      }
+    }
+    return ok({body: {itemsRemoved: removed, staleItems: res.totalCount - removed, errors: errors}});
+  }
+  catch (e) {
+    console.log(`clearStale - error`, e.stack);
+    return ok({body: e.stack});
+  }
+}
+
 export async function post_batchCheckUpdateState2(request) {
   console.log('batchCheckUpdateState start');
   try {
