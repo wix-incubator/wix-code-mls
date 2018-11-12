@@ -123,7 +123,7 @@ export async function post_clearStale2(request) {
 
   try {
     let date = new Date();
-    date.setDate(date.getDate() - 1);
+    date.setDate(date.getDate() - 3);
 
     console.log('clearStale - query clear stale for', collection);
     let res = await wixData.query(collection)
@@ -133,16 +133,21 @@ export async function post_clearStale2(request) {
     let itemsToDelete = res.items;
     let removed = 0;
     let errors = 0;
+    let tasks = [];
     for (let i=0; i < itemsToDelete.length; i++) {
-      try {
-        await wixData.remove(collection, itemsToDelete[i]._id, {suppressAuth: true});
-        removed++
-      }
-      catch (e) {
-        console.log(`clearStale - delete item - error`, e.stack);
-        errors++
-      }
+      tasks.push(async function() {
+        try {
+          await wixData.remove(collection, itemsToDelete[i]._id, {suppressAuth: true});
+          removed++
+        }
+        catch (e) {
+          console.log(`clearStale - delete item - error`, e.stack);
+          errors++
+        }
+      });
     }
+    await Queue(10, tasks);
+
     return ok({body: {itemsRemoved: removed, staleItems: res.totalCount - removed, errors: errors}});
   }
   catch (e) {
