@@ -1,9 +1,9 @@
 import {ok, serverError, forbidden} from 'wix-http-functions';
 import wixData from 'wix-data';
 import crypto from 'crypto';
-import Queue from './queue';
+import PromiseQueue from 'promise-queue';
 
-const secret = 'ee971f4a-8a30-4a10-882f-1114ee679a8a';
+const secret = '...YOUR wix-code-rets SECRET, FROM THE CONFIG FILE...';
 // URL to call this HTTP function from your published site looks like:
 // Premium site - https://mysite.com/_functions/example/multiply?leftOperand=3&rightOperand=4
 // Free site - https://username.wixsite.com/mysite/_functions/example/multiply?leftOperand=3&rightOperand=4
@@ -12,6 +12,19 @@ const secret = 'ee971f4a-8a30-4a10-882f-1114ee679a8a';
 // Premium site - https://mysite.com/_functions-dev/example/multiply?leftOperand=3&rightOperand=4
 // Free site - https://username.wixsite.com/mysite/_functions-dev/example/multiply?leftOperand=3&rightOperand=4
 
+function Queue(concurrency, tasks) {
+  return new Promise(function(resolve, reject) {
+    let q = new PromiseQueue(concurrency, Infinity, {onEmpty: function() {
+      if (q.getPendingLength() === 0)
+        resolve();
+    }});
+
+    if (tasks.length > 0)
+      tasks.forEach(_ => q.add(_));
+    else
+      resolve();
+  })
+}
 
 export async function post_saveItemBatch(request) {
   console.log('saveItemBatch start');
