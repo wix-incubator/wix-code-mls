@@ -3,8 +3,10 @@ Wix Code MLS integration using the RETS protocol
 
 ## How it works
 
-The Intergation is a node.js process that runs on your own server, using cron or a similar scheduler. When triggered, 
-it connects to the MLS server using the RETS protocol, connects to the Wix Code website using HTTP Functions and starts syncing data.
+The Intergation is a node.js process (the Integration Server) that runs on your own host, using cron or a similar scheduler. 
+When triggered, it connects to the MLS server using the RETS protocol, connects to the Wix Code website using HTTP Functions and starts syncing data.
+
+![System diagram](images/diagram.png)
 
 The actual data sync is done per MLS Table (MLS Resource & Class) to a Wix Code collection as specified in the schema file.
 For each table, the integration reads all the items from the MLS server and tries to find those items in the Wix Code collection. 
