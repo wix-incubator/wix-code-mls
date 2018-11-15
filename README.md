@@ -44,6 +44,8 @@ The setup process involves 3 stages -
 1. Run `npm install`
 1. Run `node wix-code-mls.js make-config` to create a skeleton configuration file.
 
+   ![make-config](images/make-config.png)
+
    The default filename will be `conf.json`. You can specify an alternate name using `node wix-code-mls.js make-config -o <your filename>`
 
    The default configuration file will have the following content
@@ -78,6 +80,8 @@ The setup process involves 3 stages -
 
 1. Run `node wix-code-mls.js make-schema -c conf.json -o schema.json` to create the MLS schema file. 
 
+   ![make-schema](images/make-schema.png)
+
    The `schema.json` file is used to tell the integration which MLS resources, MLS classes and tables to import into which Wix Collections. The generated file looks like the following - 
    
    ```json
@@ -109,6 +113,8 @@ The setup process involves 3 stages -
 ### Initial Run
 
 To run the integration for the first time, use the command `node wix-code-mls.js run -c conf.json -s schema.json`.
+
+![run](images/run.png)
 
 The inital run can take a few hours. Subsequent runs are normally quite faster, as there is no need to sync data that has not changed.
 
