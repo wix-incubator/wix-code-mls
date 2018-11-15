@@ -119,3 +119,11 @@ After the initial run completed, the data from the MLS server will be available 
 However, all field names will have a `[]` wrapper - `[image]`, `[address]`, etc.
 
 The `[]` wrapper indicates it is field that is not formally defined. Click on the column heading, on the column menu. Select the action of Define Field and enter the field title that fits your site.
+
+### scheduled run
+
+The next step is to setup a scheduled run for the integration code using cron or a similar scheduler. The scheduler will need to run the same run command
+
+```
+node wix-code-mls.js run -c conf.json -s schema.json
+```
