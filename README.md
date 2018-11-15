@@ -21,10 +21,53 @@ finds all items in the Wix Code collection that are older then 3 days and remove
 
 ## Prerequisites
 
-In order to run the Wix Code MLS integration you will need to setup a host denoted as the Integration Server.
-
+In order to run the Wix Code MLS integration you will need to setup a host denoted as the Integration Server. 
 On the Integration Server, you will need to install node.js, version +v8.9.4
 
 ## Setup
-2. clone this repo
-3. run `npm install`
+
+The setup process involves 3 stages - 
+1. setting up the integration server
+2. setting up the Wix Code website
+3. configuring the intergration
+
+### setting up the integration server
+
+1. Clone this repo
+1. Change directory to the repo 
+
+   `cd wix-code-mls`
+   
+1. Run `npm install`
+1. Run `node wix-code-mls.js make-config` to create a skeleton configuration file.
+
+   The default filename will be `conf.json`. You can specify an alternate name using `node wix-code-mls.js make-config -o <your filename>`
+
+   The default configuration file will have the following content
+   ```json
+   {
+      "loginUrl": "...ENTER HERE YOUR RETS SERVER URL...",
+      "username": "...RETS SERVER USERNAME...",
+      "password": "...RETS SERVER PASSWORD...",
+      "secret": "SOME AUTO GENERATED SECRET",
+      "batchCheckUpdateState": "...WIX WEBSITE URL.../_functions-dev/batchCheckUpdateState",
+      "saveItemBatch": "...WIX WEBSITE URL.../_functions-dev/saveItemBatch",
+      "clearStale": "...WIX WEBSITE URL.../_functions-dev/clearStale"
+    }
+   ```
+   
+1. Update the `loginUrl`, `username` and `password` with the values you got for the MLS server.
+
+1. Update the `batchCheckUpdateState`, `saveItemBatch` and `clearStale` with the URL of your Wix Code website
+
+### setting up the Wix Code website
+
+1. Open the Wix Editor for the selected website
+2. If Wix Code - Developer Mode is not active, activate it from the code menu
+1. In the site structure, under backend, click on the plug icon and select 'install node package'. In the dialog that opens, select the `promise-queue` package
+1. click again the plus icon under backend, and create a new javascript file. Name the file `http-functions.js`. Copy the content of `wix-code/backend/http-functions.js` from this repo and paste it into the `http-functions.js` file.
+1. Copy the secret from the `conf.json` file we have setup in the previous stage and paste it as the value of the secret in the `http-functions.js` file. Paste the secret value in the `secret` constant.
+
+   ```javascript
+   const secret = '...YOUR wix-code-rets SECRET, FROM THE CONFIG FILE...';
+   ```
