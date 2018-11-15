@@ -12,13 +12,19 @@ The actual data sync is done per MLS Table (MLS Resource & Class) to a Wix Code 
 For each table, the integration reads all the items from the MLS server and tries to find those items in the Wix Code collection. 
 For any found item, a hash of the item is compared to check if the item needs an update. 
 
-Items that do not need an update are re-saved in the Wix Code collection to update their _updatedDate field.
+Items that do not need an update are re-saved in the Wix Code collection to update their `_updatedDate` field.
 For items that have a different hash, or do not exist in the Wix Code collection, the integration loads the item images and 
 saves the item to the Wix Code collection. 
 
-Once all items that exist on the MLS server are saved or have their _updatedDate updated in the Wix Code collection, the sync 
+Once all items that exist on the MLS server are saved or have their `_updatedDate` updated in the Wix Code collection, the sync 
 finds all items in the Wix Code collection that are older then 3 days and removed them.
 
 ## Prerequisites
 
+In order to run the Wix Code MLS integration you will need to setup a host denoted as the Integration Server.
+
+On the Integration Server, you will need to install node.js, version +v8.9.4
+
 ## Setup
+2. clone this repo
+3. run `npm install`
