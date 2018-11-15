@@ -1,8 +1,8 @@
 {
-  "name": "wix-code-rets",
+  "name": "wix-code-mls",
   "version": "1.0.0",
   "description": "",
-  "main": "wix-code-rets.js",
+  "main": "wix-code-mls.js",
   "scripts": {
     "build": "babel lib --out-dir dist",
     "prepublish": "babel lib --out-dir dist"
