@@ -71,3 +71,30 @@ The setup process involves 3 stages -
    ```javascript
    const secret = '...YOUR wix-code-rets SECRET, FROM THE CONFIG FILE...';
    ```
+### Configuring the intergration
+
+1. Run `node wix-code-mls.js make-schema -c conf.json -o schema.json` to create the MLS schema file. 
+
+   The `schema.json` file is used to tell the integration which MLS resources, MLS classes and tables to import into which Wix Collections. The generated file looks like the following - 
+   
+   ```json
+   [
+     {
+       "className": "class_id",
+       "description": "class description",
+       "classTimestamp": "L_UpdateDate",
+       "resourceID": "resource_name",
+       "keyField": "L_ListingID",
+       "fields": [...]
+       "sync": true,
+       "syncImages": true,
+       "wixCollection": "resource_name"
+     },
+     ...
+   ]  
+   ```
+   
+   The important fields in the `schema.json` file are
+   * `sync` - should this table (for this resource and class) be synced to the Wix Code website?
+   * `syncImages` - should we attempt to sync images for this resource / class? As some resources do not have images, trying to sync images will only slow down the integration and report some errors. It will not prevent the integration from working.
+   * `wixCollection` - the name of the collection in the Wix Code site to sync the data into
