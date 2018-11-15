@@ -30,6 +30,9 @@ The setup process involves 3 stages -
 1. setting up the integration server
 2. setting up the Wix Code website
 3. configuring the intergration
+4. Initial run
+5. Creating fields
+6. scheduled run
 
 ### setting up the integration server
 
@@ -97,4 +100,22 @@ The setup process involves 3 stages -
    The important fields in the `schema.json` file are
    * `sync` - should this table (for this resource and class) be synced to the Wix Code website?
    * `syncImages` - should we attempt to sync images for this resource / class? As some resources do not have images, trying to sync images will only slow down the integration and report some errors. It will not prevent the integration from working.
-   * `wixCollection` - the name of the collection in the Wix Code site to sync the data into
+   * `wixCollection` - the name of the collection in the Wix Code site to sync the data into. You can change this name.
+
+1. For each `wixCollection` written in the `schema.json` file, you need to create a collection in the Wix Code website. 
+
+   In the Wix Editor, click on database, and using the plus icon create a new collection. Name it exactly as the name is written in the 'schema.json' file for this resource / class. Set the collection permissions to site content. You do not have to create fields at this stage - we can create the fields of the collection later.
+   
+### Initial Run
+
+To run the integration for the first time, use the command `node wix-code-mls.js run -c conf.json -s schema.json`.
+
+The inital run can take a few hours. Subsequent runs are normally quite faster, as there is no need to sync data that has not changed.
+
+### Create fields
+
+After the initial run completed, the data from the MLS server will be available in the Wix Code website. You can now open the collections and you will see all the data displayed in the content manager. 
+
+However, all field names will have a `[]` wrapper - `[image]`, `[address]`, etc.
+
+The `[]` wrapper indicates it is field that is not formally defined. Click on the column heading, on the column menu. Select the action of Define Field and enter the field title that fits your site.
