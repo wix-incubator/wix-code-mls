@@ -31,4 +31,5 @@ dist/
 # docs utility temp folders
 tmp*
 
-conf.json
+*.conf.json
+*.schema.json
