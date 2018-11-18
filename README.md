@@ -1,5 +1,6 @@
 # wix-code-mls
 Wix Code MLS integration using the RETS protocol
+![pixel](https://frog.wix.com/platform-cm?src=83&evid=129&eferral_url=https%3A%2F%2Fgithub.com%2Fwix%2Fwix-code-mls&_=1542542168267)
 
 ## How it works
 
@@ -133,3 +134,7 @@ The next step is to setup a scheduled run for the integration code using cron or
 ```
 node wix-code-mls.js run -c conf.json -s schema.json
 ```
+
+## attribution
+
+The Wix MLS integration was developed with the help of www.wixmls.com - MLS® data and information integration into the Wix.com platform by Rocket Web Labs Inc.
