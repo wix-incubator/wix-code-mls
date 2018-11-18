@@ -1,6 +1,5 @@
 # wix-code-mls
 Wix Code MLS integration using the RETS protocol
-![pixel](https://frog.wix.com/platform-cm?src=83&evid=129&eferral_url=https%3A%2F%2Fgithub.com%2Fwix%2Fwix-code-mls&_=1542542168267)
 
 ## How it works
 
