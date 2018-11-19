@@ -39,13 +39,13 @@ Creates a template config file for MLS server credentials, Wix Website APIs and 
 
 * -o, --output  name of the config file to generate. defaults to conf.json
 
-Example
+#### Examples
 
-#### create a default config file
+create a default config file
 
 `node wix-code-mls.js make-config`
 
-#### create a config file named my-config.json
+create a config file named my-config.json
 
 `node wix-code-mls.js make-config -o my-config.json`
 
@@ -60,11 +60,13 @@ Read more at [schema](schema.conf.md).
 * -c, --config    [required] name of the config file to use
 * -s, --schema    name of the schema file to generate. defaults to schema.json
 
-#### create a default schema file
+#### Examples
+
+create a default schema file
 
 `node wix-code-mls.js make-schema -c conf.json`
 
-#### create a schema file named my-schema.json using the my-conf.json config
+create a schema file named my-schema.json using the my-conf.json config
 
 `node wix-code-mls.js make-schema -c my-conf.json -o my-schema.json`
 
@@ -82,11 +84,13 @@ Runs the sync process, with the specified filters
 * -x, --sync      run only sync phase
 * -z, --clear     run only the clear phase
 
-#### run a full sync
+#### Examples
+
+run a full sync
 
 `node ./wix-code-mls.js run -c conf.json -s schema.json`
 
-#### run sync only for the Property resource
+run sync only for the Property resource
 
 `node ./wix-code-mls.js run -c conf.json -s schema.json -x -r Property`
 
