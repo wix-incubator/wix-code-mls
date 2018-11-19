@@ -27,9 +27,9 @@ On the Integration Server, you will need to install node.js, version +v8.9.4
 ## command line parameters
 
 The application exposes 3 commands:
-* make-config - generates the basic wix-code-rets config file
-* make-schema - generates a schema file describing the RETS server Resources and Classes, and how to sync those to a Wix Code website
-* run         - runs the RETS integration, importing the data into a Wix Code website
+* `make-config` - generates the basic wix-code-rets config file
+* `make-schema` - generates a schema file describing the RETS server Resources and Classes, and how to sync those to a Wix Code website
+* `run`         - runs the RETS integration, importing the data into a Wix Code website
 
 ### make-config
 
