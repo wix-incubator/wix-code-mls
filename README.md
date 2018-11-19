@@ -24,6 +24,76 @@ finds all items in the Wix Code collection that are older then 3 days and remove
 In order to run the Wix Code MLS integration you will need to setup a host denoted as the Integration Server. 
 On the Integration Server, you will need to install node.js, version +v8.9.4
 
+## command line parameters
+
+The application exposes 3 commands:
+* make-config - generates the basic wix-code-rets config file
+* make-schema - generates a schema file describing the RETS server Resources and Classes, and how to sync those to a Wix Code website
+* run         - runs the RETS integration, importing the data into a Wix Code website
+
+### make-config
+
+Creates a template config file for MLS server credentials, Wix Website APIs and secret
+
+`node wix-code-mls.js make-config [-o <output filename>]`
+
+* -o, --output  name of the config file to generate. defaults to conf.json
+
+Example
+
+#### create a default config file
+
+`node wix-code-mls.js make-config`
+
+#### create a config file named my-config.json
+
+`node wix-code-mls.js make-config -o my-config.json`
+
+
+### make-schema
+
+Creates the MLS resource and class schema file, used by the sync process as metadata, and to configure what to sync.
+Read more at [schema](schema.conf.md).
+
+`node ./wix-code-mls.js make-schema -c <config file> [-s <schema filename>]`
+
+* -c, --config    [required] name of the config file to use
+* -s, --schema    name of the schema file to generate. defaults to schema.json
+
+#### create a default schema file
+
+`node wix-code-mls.js make-schema -c conf.json`
+
+#### create a schema file named my-schema.json using the my-conf.json config
+
+`node wix-code-mls.js make-schema -c my-conf.json -o my-schema.json`
+
+
+### make-run
+
+Runs the sync process, with the specified filters
+
+`node ./wix-code-mls.js run -c <config file> -s <schema filename> [-r <resource id>] [-l <class name>] [-x] [-z]`
+
+* -c, --config    [required] name of the config file to use
+* -s, --schema    [required] name of the schema file to use
+* -r, --resource  limit the run to a specific resource, or multiple resources
+* -l, --class     limit the run to a specific class, or multiple classes
+* -x, --sync      run only sync phase
+* -z, --clear     run only the clear phase
+
+#### run a full sync
+
+`node ./wix-code-mls.js run -c conf.json -s schema.json`
+
+#### run sync only for the Property resource
+
+`node ./wix-code-mls.js run -c conf.json -s schema.json -x -r Property`
+
+or
+
+`node ./wix-code-mls.js run -c conf.json -s schema.json --sync --resource Property`
+
 ## Setup
 
 The setup process involves 3 stages - 
