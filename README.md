@@ -76,7 +76,7 @@ The setup process involves 3 stages -
    ```javascript
    const secret = '...YOUR wix-code-rets SECRET, FROM THE CONFIG FILE...';
    ```
-### Configuring the intergration
+### Configuring the integration
 
 1. Run `node wix-code-mls.js make-schema -c conf.json -o schema.json` to create the MLS schema file. 
 
@@ -87,10 +87,10 @@ The setup process involves 3 stages -
    ```json
    [
      {
+       "resourceID": "resource_name",
        "className": "class_id",
        "description": "class description",
        "classTimestamp": "L_UpdateDate",
-       "resourceID": "resource_name",
        "keyField": "L_ListingID",
        "fields": [...]
        "sync": true,
@@ -101,14 +101,23 @@ The setup process involves 3 stages -
    ]  
    ```
    
-   The important fields in the `schema.json` file are
+   The schema fields -
+   * `resourceID` - the name of the resource
+   * `className` - the name of the class
+   * `description` - the description of the class, from the MLS server
+   * `classTimestamp` - optional timestamp field used to retrieve new elements from the MLS server
+   * `keyField` - which field is the key field in the MLS server for this class
+   * `fields` - the list of fields of this table (resource & class).
    * `sync` - should this table (for this resource and class) be synced to the Wix Code website?
    * `syncImages` - should we attempt to sync images for this resource / class? As some resources do not have images, trying to sync images will only slow down the integration and report some errors. It will not prevent the integration from working.
+   * `filter` - optional filter to limit the sync to only a part of the MLS table. Read more at [schema](schema.conf.md).
    * `wixCollection` - the name of the collection in the Wix Code site to sync the data into. You can change this name.
 
 1. For each `wixCollection` written in the `schema.json` file, you need to create a collection in the Wix Code website. 
 
    In the Wix Editor, click on database, and using the plus icon create a new collection. Name it exactly as the name is written in the 'schema.json' file for this resource / class. Set the collection permissions to site content. You do not have to create fields at this stage - we can create the fields of the collection later.
+
+1. In some cases, you need to tweak the synchronization parameters - read more at [schema](schema.conf.md)
    
 ### Initial Run
 
