@@ -3,7 +3,7 @@ Wix Code MLS integration using the RETS protocol
 
 ## How it works
 
-The Intergation is a node.js process (the Integration Server) that runs on your own host, using cron or a similar scheduler. 
+The Integration is a node.js process (the Integration Server) that runs on your own host, using cron or a similar scheduler.
 When triggered, it connects to the MLS server using the RETS protocol, connects to the Wix Code website using HTTP Functions and starts syncing data.
 
 ![System diagram](images/diagram.png)
@@ -29,7 +29,7 @@ On the Integration Server, you will need to install node.js, version +v8.9.4
 The setup process involves 3 stages - 
 1. setting up the integration server
 2. setting up the Wix Code website
-3. configuring the intergration
+3. configuring the integration
 4. Initial run
 5. Creating fields
 6. scheduled run
@@ -125,7 +125,7 @@ To run the integration for the first time, use the command `node wix-code-mls.js
 
 ![run](images/run.png)
 
-The inital run can take a few hours. Subsequent runs are normally quite faster, as there is no need to sync data that has not changed.
+The initial run can take a few hours. Subsequent runs are normally quite faster, as there is no need to sync data that has not changed.
 
 ### Create fields
 
