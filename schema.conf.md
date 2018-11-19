@@ -144,3 +144,20 @@ To setup a filter to only sync `Active` `Status`, the expression will be `"filte
 
 e.g.
 `(<SystemName> =|<LookupValues[].Value>)`
+
+### Filtering using date fields
+
+When filtering on date fields, in most cases the filter should be dynamic, relative to the current date.
+
+MLS query filters support filters on dates using a format like `(EVENT200=2018-06-01T00:00:00+)`.
+
+In order to generate the date string in the filter dynamically, the wix-code-mls allows to run code expressions
+as part of the filter format. The `{}` brackets designate javascript code that is run as part of the sync process.
+The javascript code can use the moment javascript library to manipulate dates
+
+For instance, to get a filter for anything 30 days old and newer, use the following
+```
+(EVENT200={moment().subtract(30, 'day').format('YYYY-MM-DDThh:mm:ss')}+)
+```
+
+
