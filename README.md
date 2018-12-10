@@ -3,9 +3,9 @@ Wix Code MLS integration using the RETS protocol
 
 ## About Wix Code
 
-Wix Code is a robust website building platform that combines the design features of an intuitive editor with powerful CMS tools, cloud IDE and dedicated Node.js server.
+[Wix Code](https://www.wix.com/code/home) is a robust website building platform that combines the design features of an intuitive editor with powerful CMS tools, cloud IDE and dedicated Node.js server.
 
-Using Wix Code you can take full control of yours site’s functionality––connect your site to any external API, use HTTP functions to expose your site as a service and much more. Explore the Wix Code Forum for community discussions, tips and product updates.
+Using Wix Code you can take full control of yours site’s functionality––connect your site to any external API, use HTTP functions to expose your site as a service and much more. Explore the [Wix Code Forum](https://www.wix.com/code/home/forum) for community discussions, tips and product updates.
 
 ## How it works
 
