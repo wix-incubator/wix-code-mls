@@ -124,7 +124,7 @@ export async function post_batchCheckUpdateState(request) {
 
       items.forEach(item => {
         let foundItem = res.items.find(_ => _._id === item.id);
-        if (foundItem && foundItem._hash === item.hash) {
+        if (foundItem && foundItem._hash === item.hash && foundItem.mainImage) {
           itemsToUpdate.push(foundItem);
           cOk += 1;
           result.push({status: 'ok', id: item.id});
