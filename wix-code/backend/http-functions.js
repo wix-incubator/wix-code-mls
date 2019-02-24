@@ -129,6 +129,10 @@ export async function post_batchCheckUpdateState(request) {
           cOk += 1;
           result.push({status: 'ok', id: item.id});
         }
+        else if (foundItem && foundItem._hash === item.hash && !foundItem.mainImage) {
+          cNeedUpdate += 1;
+          result.push({status: 'ok-no-images', id: item.id});
+        }
         else if (foundItem) {
           cNeedUpdate += 1;
           result.push({status: 'need-update', id: item.id});
