@@ -143,13 +143,17 @@ The setup process involves 3 stages -
       "secret": "SOME AUTO GENERATED SECRET",
       "batchCheckUpdateState": "...WIX WEBSITE URL.../_functions-dev/batchCheckUpdateState",
       "saveItemBatch": "...WIX WEBSITE URL.../_functions-dev/saveItemBatch",
-      "clearStale": "...WIX WEBSITE URL.../_functions-dev/clearStale"
+      "clearStale": "...WIX WEBSITE URL.../_functions-dev/clearStale",
+      "batchSize": 50
     }
    ```
    
 1. Update the `loginUrl`, `username` and `password` with the values you got for the MLS server.
 
 1. Update the `batchCheckUpdateState`, `saveItemBatch` and `clearStale` with the URL of your Wix Code website
+
+1. If, when running, you get an error message that indicates requests too large for Wix Data
+(currently, those appear as "Internal wixData error: Unknown error."), try to decrease the batchSize.
 
 ### setting up the Wix Code website
 
