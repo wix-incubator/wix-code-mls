@@ -1,6 +1,6 @@
 {
   "name": "wix-code-mls",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "wix-code-mls.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "optimist": "^0.6.1",
     "promise-queue": "^2.2.5",
     "promise-writable": "^3.1.2",
-    "rets-client": "5.2.0",
+    "rets-client": "5.2.3",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
