@@ -81,7 +81,7 @@ create a schema file named my-schema.json using the my-conf.json config
 
 Runs the sync process, with the specified filters
 
-`node ./wix-code-mls.js run -c <config file> -s <schema filename> [-r <resource id>] [-l <class name>] [-x] [-z] [-a <filename>]`
+`node ./wix-code-mls.js run -c <config file> -s <schema filename> [-r <resource id>] [-l <class name>] [-x] [-z] [-a <filename>] [-f]`
 
 * -c, --config    [required] name of the config file to use
 * -s, --schema    [required] name of the schema file to use
@@ -90,6 +90,7 @@ Runs the sync process, with the specified filters
 * -x, --sync      run only sync phase
 * -z, --clear     run only the clear phase
 * -a, --audit     write an audit log. Writes the log to the filename given
+* -f, --force     force refresh of all resources
 
 #### Examples
 
