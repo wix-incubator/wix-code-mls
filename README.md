@@ -232,6 +232,10 @@ The next step is to setup a scheduled run for the integration code using cron or
 ```
 node wix-code-mls.js run -c conf.json -s schema.json
 ```
+# Added a CLI + Scheduler
+after `npm install`
+run `node init` on command line
+follow the instruction to create conf, schema file on the "Integration" folder
 
 ## attribution
 
