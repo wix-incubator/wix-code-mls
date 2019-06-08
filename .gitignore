@@ -17,7 +17,8 @@ target
 
 # Dependency directories
 node_modules
-
+# Integration details conf and schema file
+Integration
 # Optional npm cache directory
 .npm
 

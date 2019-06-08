@@ -5,7 +5,8 @@
   "main": "wix-code-mls.js",
   "scripts": {
     "build": "babel lib --out-dir dist",
-    "prepublish": "babel lib --out-dir dist"
+    "prepublish": "babel lib --out-dir dist",
+    "buildI" : "babel init.js -d build"
   },
   "author": "",
   "license": "ISC",
