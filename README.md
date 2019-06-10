@@ -81,7 +81,7 @@ create a schema file named my-schema.json using the my-conf.json config
 
 Runs the sync process, with the specified filters
 
-`node ./wix-code-mls.js run -c <config file> -s <schema filename> [-r <resource id>] [-l <class name>] [-x] [-z] [-a <filename>]`
+`node ./wix-code-mls.js run -c <config file> -s <schema filename> [-r <resource id>] [-l <class name>] [-x] [-z] [-a <filename>] [-f]`
 
 * -c, --config    [required] name of the config file to use
 * -s, --schema    [required] name of the schema file to use
@@ -90,6 +90,7 @@ Runs the sync process, with the specified filters
 * -x, --sync      run only sync phase
 * -z, --clear     run only the clear phase
 * -a, --audit     write an audit log. Writes the log to the filename given
+* -f, --force     force refresh of all resources
 
 #### Examples
 
@@ -185,7 +186,8 @@ The setup process involves 3 stages -
        "fields": [...]
        "sync": true,
        "syncImages": true,
-       "wixCollection": "resource_name"
+       "wixCollection": "resource_name",
+       "overrideGetImagesUrl": "filename"
      },
      ...
    ]  
@@ -200,14 +202,19 @@ The setup process involves 3 stages -
    * `fields` - the list of fields of this table (resource & class).
    * `sync` - should this table (for this resource and class) be synced to the Wix Code website?
    * `syncImages` - should we attempt to sync images for this resource / class? As some resources do not have images, trying to sync images will only slow down the integration and report some errors. It will not prevent the integration from working.
-   * `filter` - optional filter to limit the sync to only a part of the MLS table. Read more at [schema](schema.conf.md).
+   * `filter` [optional] - optional filter to limit the sync to only a part of the MLS table. Read more at [schema](schema.conf.md).
    * `wixCollection` - the name of the collection in the Wix Code site to sync the data into. You can change this name.
+   * `overrideGetImagesUrl` [optional] - filename for an alternative strategy to get resource images. Read more at [schema](schema.conf.md).
 
 1. For each `wixCollection` written in the `schema.json` file, you need to create a collection in the Wix Code website. 
 
    In the Wix Editor, click on database, and using the plus icon create a new collection. Name it exactly as the name is written in the 'schema.json' file for this resource / class. Set the collection permissions to site content. You do not have to create fields at this stage - we can create the fields of the collection later.
 
-1. In some cases, you need to tweak the synchronization parameters - read more at [schema](schema.conf.md)
+#### Schema Customization
+
+Schema customization allows adding filters and alternative strategies for images.
+
+read more at [schema](schema.conf.md)
    
 ### Initial Run
 
