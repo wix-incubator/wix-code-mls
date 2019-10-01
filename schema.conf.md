@@ -23,7 +23,9 @@ The structure of the schema file includes the following
     "syncImages": true,
     "filter": "MLS Query filter",
     "wixCollection": "collection name",
-    "overrideGetImagesUrl": "filename"
+    "overrideGetImagesUrl": "filename",
+    "alternateImageObjectType": "objectType"
+    "importImagesToWixMedia": true
   },
   ...
 ]
@@ -55,43 +57,10 @@ ReplyText: RETS Server: Invalid Resource parameter in request.
 
 To prevent syncing images for that resource, set `syncImages` to `false`.
 
-## Alternate strategy for fetching image URLs
+## Supporting Images
 
-By specifying the `overrideGetImagesUrl` parameter, the integration will lookup a Node.js module relative to the root of the running process.
-It will load the module and use the default exported function get a resource images instead of the default strategy.
-
-The signature expected from the module -
-
-```
-function getImageUrls(client: RetsClient, item: Object, resourceID: String,
-  keyField: String, itemIndex: Integer, logger: Logger): Promise<Array<String>>
-```
-
-* client - an instance of rets-client. Read more at [rets-client NPM module](https://www.npmjs.com/package/rets-client)
-* item - the Resource as a javascript object
-* resourceID - the resource id of the item, as in the schema file
-* keyField - the name of the key field, taken from the schema file
-* itemIndex - the number of the item in this sync process, great for logging
-* logger - a logger instance, as defined in [logger.js](https://github.com/wix/wix-code-mls/blob/master/lib/logger.js)
-* returns - a promise that is resolved to an array of media URLs. For no images resolve to an empty array.
-
-The default strategy is to lookup resource images using `getObjects` call with the `Resource`, `Class` and `ResourceID`.
-
-### Example
-
-Alternate strategy that reads images from the `Media` Resource using `Query` instead of `getObjects`.
-
-```
-module.exports = function defaultGetImageUrls(client, item, resourceID, keyField, itemIndex, logger) {
-  let resourceRecordKeyNum = item['listingKeyNumeric'];
-  logger.trace('        query on Media Media with filter', `(ResourceRecordKeyNumeric=${resourceRecordKeyNum})`);
-  return client.search.query('Media', 'Media', `(ResourceRecordKeyNumeric=${resourceRecordKeyNum})`,
-    {limit: 200, offset: 0})
-    .then(res => {
-      return res.results.map(_ => _.MediaURL);
-    })
-};
-```
+The `overrideGetImagesUrl`, `alternateImageObjectType` and `importImagesToWixMedia` properties enable customizing
+how to get images, given the support and requirements of different MLS servers. Read more at [images](images.md).
 
 ## Filtering Resource & Class
 

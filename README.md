@@ -145,13 +145,14 @@ The setup process involves 3 stages -
       "batchCheckUpdateState": "...WIX WEBSITE URL.../_functions-dev/batchCheckUpdateState",
       "saveItemBatch": "...WIX WEBSITE URL.../_functions-dev/saveItemBatch",
       "clearStale": "...WIX WEBSITE URL.../_functions-dev/clearStale",
-      "batchSize": 50
+      "uploadImage": "...WIX WEBSITE URL.../_functions-dev/uploadImage",
+      "batchSize": 40
     }
    ```
    
 1. Update the `loginUrl`, `username` and `password` with the values you got for the MLS server.
 
-1. Update the `batchCheckUpdateState`, `saveItemBatch` and `clearStale` with the URL of your Wix Code website
+1. Update the `batchCheckUpdateState`, `saveItemBatch`, `clearStale` and `uploadImage` with the URL of your Wix Code website
 
 1. If, when running, you get an error message that indicates requests too large for Wix Data
 (currently, those appear as "Internal wixData error: Unknown error."), try to decrease the batchSize.
@@ -188,7 +189,8 @@ The setup process involves 3 stages -
        "syncImages": true,
        "wixCollection": "resource_name",
        "overrideGetImagesUrl": "filename",
-       "alternateImageObjectType": "Object-Type"
+       "alternateImageObjectType": "Object-Type",
+       "importImagesToWixMedia": true
      },
      ...
    ]  
@@ -205,9 +207,11 @@ The setup process involves 3 stages -
    * `syncImages` - should we attempt to sync images for this resource / class? As some resources do not have images, trying to sync images will only slow down the integration and report some errors. It will not prevent the integration from working.
    * `filter` [optional] - optional filter to limit the sync to only a part of the MLS table. Read more at [schema](schema.conf.md).
    * `wixCollection` - the name of the collection in the Wix Code site to sync the data into. You can change this name.
-   * `overrideGetImagesUrl` [optional] - filename for an alternative strategy to get resource images. Read more at [schema](schema.conf.md).
+   * `overrideGetImagesUrl` [optional] - filename for an alternative strategy to get resource images. Read more at [schema](schema.conf.md), [images](images.md).
    * `alternateImageObjectType` [optional] - the object type to use with getObject operation for getting image URLs. The default value is `Image`.
-      With some MLS vendors, in order to get high resolution photos, we need to specify 'HiRes'.
+      With some MLS vendors, in order to get high resolution photos, we need to specify 'HiRes'. Read more at [images](images.md).
+   * `importImagesToWixMedia` [optional] - if set to true, will import the images to wix media. Required for servers who do not support getObject with Location=1.
+      Read more at [images](images.md).
 
 1. For each `wixCollection` written in the `schema.json` file, you need to create a collection in the Wix Code website. 
 

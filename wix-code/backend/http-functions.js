@@ -2,6 +2,7 @@ import {ok, serverError, forbidden} from 'wix-http-functions';
 import wixData from 'wix-data';
 import crypto from 'crypto';
 import PromiseQueue from 'promise-queue';
+import wixMedia from 'wix-media-backend';
 
 const secret = '...YOUR wix-code-rets SECRET, FROM THE CONFIG FILE...';
 // URL to call this HTTP function from your published site looks like:
@@ -158,6 +159,52 @@ export async function post_batchCheckUpdateState(request) {
   }
   catch (e) {
     console.log('batchCheckUpdateState error', e.message, e.stack);
+    return ok({body: e.stack});
+  }
+}
+
+export async function post_uploadImage(request) {
+  console.log('uploadImage start');
+  try {
+    const payload = await request.body.text();
+    const payloadJson = JSON.parse(payload, dateReviver);
+
+    const hmac = crypto.createHmac('sha256', secret);
+    hmac.update(JSON.stringify(payloadJson.data, dateReplacer));
+    if (hmac.digest('hex') !== payloadJson.signature) {
+      return forbidden({body: 'invalid signature'});
+    }
+
+    const imageDataSerialized = payloadJson.data.imageData;
+    const fileName = payloadJson.data.fileName;
+    const mimeType = payloadJson.data.mimeType;
+    const resource = payloadJson.data.resource;
+    const id = payloadJson.data.id;
+
+    const imageData = Buffer.from(imageDataSerialized, 'base64');
+    const uploadResult = await wixMedia.upload('/mls-images',
+      imageData,
+      fileName,
+      {
+        "mediaOptions": {
+          "mimeType": mimeType,
+          "mediaType": "image"
+        },
+        "metadataOptions": {
+          "isPrivate": false,
+          "isVisitorUpload": false,
+          "context": {
+            "resource": resource,
+            "id": id
+          }
+        }
+      });
+
+    console.log('uploadImage complete', `${resource} id: ${id} file: ${fileName}`, uploadResult.fileUrl);
+    return ok({body: uploadResult.fileUrl});
+  }
+  catch (e) {
+    console.log('uploadImage error', e.message, e.stack);
     return ok({body: e.stack});
   }
 }
