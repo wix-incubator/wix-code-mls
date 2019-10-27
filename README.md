@@ -206,6 +206,7 @@ The setup process involves 3 stages -
    * `sync` - should this table (for this resource and class) be synced to the Wix Code website?
    * `syncImages` - should we attempt to sync images for this resource / class? As some resources do not have images, trying to sync images will only slow down the integration and report some errors. It will not prevent the integration from working.
    * `filter` [optional] - optional filter to limit the sync to only a part of the MLS table. Read more at [schema](schema.conf.md).
+   * `noPaging` [optional] - optional indicator for not using paging (skip and limit) for servers who do not support paging
    * `wixCollection` - the name of the collection in the Wix Code site to sync the data into. You can change this name.
    * `overrideGetImagesUrl` [optional] - filename for an alternative strategy to get resource images. Read more at [schema](schema.conf.md), [images](images.md).
    * `alternateImageObjectType` [optional] - the object type to use with getObject operation for getting image URLs. The default value is `Image`.
