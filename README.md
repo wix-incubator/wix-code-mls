@@ -142,17 +142,17 @@ The setup process involves 3 stages -
       "username": "...RETS SERVER USERNAME...",
       "password": "...RETS SERVER PASSWORD...",
       "secret": "SOME AUTO GENERATED SECRET",
-      "batchCheckUpdateState": "...WIX WEBSITE URL.../_functions-dev/batchCheckUpdateState",
-      "saveItemBatch": "...WIX WEBSITE URL.../_functions-dev/saveItemBatch",
-      "clearStale": "...WIX WEBSITE URL.../_functions-dev/clearStale",
-      "getImageUploadUrl": "...WIX WEBSITE URL.../_functions-dev/getImageUploadUrl",
+      "siteUrl": "...WIX WEBSITE URL...",
+      "sandboxLive": "sandbox",
       "batchSize": 40
     }
    ```
    
 1. Update the `loginUrl`, `username` and `password` with the values you got for the MLS server.
 
-1. Update the `batchCheckUpdateState`, `saveItemBatch`, `clearStale` and `uploadImage` with the URL of your Wix Code website
+1. Update the `siteUrl` with the URL of your Wix Code website.
+
+1. When ready to run the integration on the live database, update `sandboxLive` to 'live'.
 
 1. If, when running, you get an error message that indicates requests too large for Wix Data
 (currently, those appear as "Internal wixData error: Unknown error."), try to decrease the batchSize.
