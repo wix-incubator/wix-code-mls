@@ -175,11 +175,11 @@ export async function post_getImageUploadUrl(request) {
       return forbidden({body: 'invalid signature'});
     }
 
-    const mimeType = payloadJson.data.mimeType;
+    const mimeTypes = payloadJson.data.mimeTypes;
     const resource = payloadJson.data.resource;
     const id = payloadJson.data.id;
 
-    const {uploadUrl, uploadToken} = await mediaManager.getUploadUrl('/mls-images',
+    const uploadUrlObjs = await Promise.all(mimeTypes.map(mimeType => mediaManager.getUploadUrl('/mls-images',
       {
         "mediaOptions": {
           "mimeType": mimeType,
@@ -193,10 +193,10 @@ export async function post_getImageUploadUrl(request) {
             "id": id
           }
         }
-      });
+      })));
 
-    console.log('getImageUploadUrl complete', `${resource} id: ${id} upload url: ${uploadUrl}`);
-    return ok({body: {uploadUrl, uploadToken}});
+    console.log('getImageUploadUrl complete', `${resource} id: ${id}`);
+    return ok({body: uploadUrlObjs});
   }
   catch (e) {
     console.log('getImageUploadUrl error', e.message, e.stack);
