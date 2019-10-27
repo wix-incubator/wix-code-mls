@@ -2,7 +2,7 @@ import {ok, serverError, forbidden} from 'wix-http-functions';
 import wixData from 'wix-data';
 import crypto from 'crypto';
 import PromiseQueue from 'promise-queue';
-import wixMedia from 'wix-media-backend';
+import {mediaManager} from 'wix-media-backend';
 
 const secret = '...YOUR wix-code-rets SECRET, FROM THE CONFIG FILE...';
 // URL to call this HTTP function from your published site looks like:
@@ -163,8 +163,8 @@ export async function post_batchCheckUpdateState(request) {
   }
 }
 
-export async function post_uploadImage(request) {
-  console.log('uploadImage start');
+export async function post_getImageUploadUrl(request) {
+  console.log('getImageUploadUrl start');
   try {
     const payload = await request.body.text();
     const payloadJson = JSON.parse(payload, dateReviver);
@@ -175,16 +175,11 @@ export async function post_uploadImage(request) {
       return forbidden({body: 'invalid signature'});
     }
 
-    const imageDataSerialized = payloadJson.data.imageData;
-    const fileName = payloadJson.data.fileName;
     const mimeType = payloadJson.data.mimeType;
     const resource = payloadJson.data.resource;
     const id = payloadJson.data.id;
 
-    const imageData = Buffer.from(imageDataSerialized, 'base64');
-    const uploadResult = await wixMedia.upload('/mls-images',
-      imageData,
-      fileName,
+    const {uploadUrl, uploadToken} = await mediaManager.getUploadUrl('/mls-images',
       {
         "mediaOptions": {
           "mimeType": mimeType,
@@ -200,15 +195,14 @@ export async function post_uploadImage(request) {
         }
       });
 
-    console.log('uploadImage complete', `${resource} id: ${id} file: ${fileName}`, uploadResult.fileUrl);
-    return ok({body: uploadResult.fileUrl});
+    console.log('getImageUploadUrl complete', `${resource} id: ${id} upload url: ${uploadUrl}`);
+    return ok({body: {uploadUrl, uploadToken}});
   }
   catch (e) {
-    console.log('uploadImage error', e.message, e.stack);
+    console.log('getImageUploadUrl error', e.message, e.stack);
     return ok({body: e.stack});
   }
 }
-
 
 const dateRegex = /^Date\((\d+)\)$/;
 function dateReviver(key, value) {

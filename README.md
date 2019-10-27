@@ -145,7 +145,7 @@ The setup process involves 3 stages -
       "batchCheckUpdateState": "...WIX WEBSITE URL.../_functions-dev/batchCheckUpdateState",
       "saveItemBatch": "...WIX WEBSITE URL.../_functions-dev/saveItemBatch",
       "clearStale": "...WIX WEBSITE URL.../_functions-dev/clearStale",
-      "uploadImage": "...WIX WEBSITE URL.../_functions-dev/uploadImage",
+      "getImageUploadUrl": "...WIX WEBSITE URL.../_functions-dev/getImageUploadUrl",
       "batchSize": 40
     }
    ```
