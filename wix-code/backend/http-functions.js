@@ -179,21 +179,27 @@ export async function post_getImageUploadUrl(request) {
     const resource = payloadJson.data.resource;
     const id = payloadJson.data.id;
 
-    const uploadUrlObjs = await Promise.all(mimeTypes.map(mimeType => mediaManager.getUploadUrl('/mls-images',
-      {
-        "mediaOptions": {
-          "mimeType": mimeType,
-          "mediaType": "image"
-        },
-        "metadataOptions": {
-          "isPrivate": false,
-          "isVisitorUpload": false,
-          "context": {
-            "resource": resource,
-            "id": id
-          }
-        }
-      })));
+    let uploadUrlObjs = [];
+    await Queue(1, mimeTypes.map(mimeType => {
+      return async function() {
+        let uploadUrlObj = await mediaManager.getUploadUrl('/mls-images',
+          {
+            "mediaOptions": {
+              "mimeType": mimeType,
+              "mediaType": "image"
+            },
+            "metadataOptions": {
+              "isPrivate": false,
+              "isVisitorUpload": false,
+              "context": {
+                "resource": resource,
+                "id": id
+              }
+            }
+          });
+        uploadUrlObjs.push(uploadUrlObj);
+      }
+    }));
 
     console.log('getImageUploadUrl complete', `${resource} id: ${id}`);
     return ok({body: uploadUrlObjs});
