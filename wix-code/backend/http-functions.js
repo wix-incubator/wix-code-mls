@@ -179,8 +179,10 @@ export async function post_getImageUploadUrl(request) {
     const resource = payloadJson.data.resource;
     const id = payloadJson.data.id;
 
-    let uploadUrlObjs = [];
-    await Queue(1, mimeTypes.map(mimeType => {
+    const uniqueMimeTypes = [...new Set(mimeTypes)];
+
+    let uploadUrlObjs = {};
+    await Queue(1, uniqueMimeTypes.map(mimeType => {
       return async function() {
         let uploadUrlObj = await mediaManager.getUploadUrl('/mls-images',
           {
@@ -197,7 +199,7 @@ export async function post_getImageUploadUrl(request) {
               }
             }
           });
-        uploadUrlObjs.push(uploadUrlObj);
+        uploadUrlObjs[mimeType] = uploadUrlObj;
       }
     }));
 
