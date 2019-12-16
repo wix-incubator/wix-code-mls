@@ -52,7 +52,7 @@ The signature expected from the module -
 
 ```
 function getImageUrls(client: RetsClient, item: Object, resourceID: String,
-  keyField: String, itemIndex: Integer, logger: Logger): Promise<Array<String>>
+  keyField: String, itemIndex: Integer, logger: Logger, uploadImagesToWix: (Array<{imageData: Buffer, mimeType: String}>) => Promise<Array<String>>): Promise<Array<String>>
 ```
 
 * client - an instance of rets-client. Read more at [rets-client NPM module](https://www.npmjs.com/package/rets-client)
@@ -61,6 +61,7 @@ function getImageUrls(client: RetsClient, item: Object, resourceID: String,
 * keyField - the name of the key field, taken from the schema file
 * itemIndex - the number of the item in this sync process, great for logging
 * logger - a logger instance, as defined in [logger.js](https://github.com/wix/wix-code-mls/blob/master/lib/logger.js)
+* uploadImagesToWix - a function that can load an array of Buffers containing image data to Wix storage and retrieve image URLs
 * returns - a promise that is resolved to an array of media URLs. For no images resolve to an empty array.
 
 The default strategy is to lookup resource images using `getObjects` call with the `Resource`, `Class` and `ResourceID`.
@@ -80,3 +81,64 @@ module.exports = function defaultGetImageUrls(client, item, resourceID, keyField
     })
 };
 ```
+
+### Another Example
+
+Alternate strategy that reads images using GetObjects from a server that only returns a single image at a time, requiring the client to
+ask for images with resourceKey:imageIndex, and upload the images to Wix storage
+
+```
+module.exports = async function defaultGetImageUrls(client, item, resourceID, keyField, itemIndex, logger, uploadImagesToWix) {
+  let resourceKey = item['matrix_unique_ID'];
+
+  let imageIndex = 1;
+  let imagesToUpload = [];
+  let hasMoreImages = true;
+  while (hasMoreImages) {
+    logger.trace(`        getObject?Type=VLargePhoto&Resource=${resourceID}&ID=${resourceKey}:${imageIndex} item ${itemIndex}`);
+    try {
+      let photoResults = await client.objects.getAllObjects(resourceID, 'VLargePhoto', [`${resourceKey}:${imageIndex}`], {
+        alwaysGroupObjects: true,
+        ObjectData: '*',
+      });
+
+      let imagesData = photoResults.objects.filter(obj => {
+        if (obj.type === 'headerInfo') {
+          return false;
+        }
+        else if (obj.error) {
+          if (obj.error.replyCode === '20403') {
+            // no objects found
+            hasMoreImages = false;
+            if (imageIndex === 1)
+              logger.trace(`        importImages - no photos found for ${resourceID} - ${resourceKey}`);
+            return false;
+          }
+          else
+            logger.warn(`        importImages - Error reading ${resourceID} photos for key ${resourceKey}:${imageIndex}: ${obj.error}`);
+          return false;
+        }
+        else
+          return true;
+      }).map(obj => {
+        return {imageData: obj.data, mimeType: obj.headerInfo.contentType};
+      });
+
+      // only add the first image, as we get duplicate images in this call
+      if (imagesData.length > 0)
+        imagesToUpload.push(imagesData[0]);
+    }
+    catch (err) {
+      if (err.replyCode === '20403') {
+        logger.trace(`        importImages - no photos found for ${resourceID} - ${resourceKey}`);
+        hasMoreImages = false;
+      }
+      else
+        throw err;
+    }
+
+    imageIndex = imageIndex + 1;
+  }
+
+  return await uploadImagesToWix(imagesToUpload);
+};```
