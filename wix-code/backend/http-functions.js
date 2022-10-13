@@ -43,12 +43,12 @@ export async function post_saveItemBatch(request) {
   try {
     let bulkResult = await wixData.bulkSave(collection, items, {suppressAuth: true});
     console.log('saveItemBatch bulkUpdate', bulkResult);
+    console.log('saveItemBatch completed');
+    return ok({body: {status: 'ok', result: bulkResult}});
   }
   catch (e) {
-    return ok({body: e.stack});
+    return ok({body: {status: 'error', stack: e.stack}});
   }
-  console.log('saveItemBatch completed');
-  return ok({body: 'ok'});
 }
 
 export async function post_clearStale(request) {
@@ -116,6 +116,7 @@ export async function post_batchCheckUpdateState(request) {
     let queries = items.map(item => wixData.query(collection).eq('_id', item.id));
     console.log('batchCheckUpdateState input queries:', items.length);
     let query = queries.reduce((accuQuery, query) => (!!accuQuery)?accuQuery.or(query): query);
+    query = query.limit(items.length);
     let result = [];
     let itemsToUpdate = [];
     let cOk =0, cNeedUpdate = 0, cNotFound = 0;
@@ -152,14 +153,21 @@ export async function post_batchCheckUpdateState(request) {
 
     console.log('batchCheckUpdateState items to update:', itemsToUpdate.length);
     console.log(`batchCheckUpdateState results: ${result.length} - ${cOk}/${cNeedUpdate}/${cNotFound}`);
-    let updateResult = await wixData.bulkUpdate(collection, itemsToUpdate, {suppressAuth: true});
-    console.log('batchCheckUpdateState bulkUpdate result', updateResult);
+    if (itemsToUpdate.length > 0) {
+      let updateResult = await wixData.bulkUpdate(collection, itemsToUpdate, {suppressAuth: true});
+      console.log('batchCheckUpdateState bulkUpdate result', updateResult);
+    }
     console.log('batchCheckUpdateState complete', result);
-    return ok({body: JSON.stringify(result)});
+    return ok({body: {
+        status: 'ok',
+        result
+      }});
   }
   catch (e) {
     console.log('batchCheckUpdateState error', e.message, e.stack);
-    return ok({body: e.stack});
+    return ok({body: {
+      status: 'error',
+      stack: e.stack}});
   }
 }
 
